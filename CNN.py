@@ -11,34 +11,23 @@ from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from tensorflow.keras.models import save_model
 
 def load_and_process_data(csv_file_path):
-    """Loads CSV data, handles missing values, and performs basic preprocessing.
+  
 
-    Args:
-        csv_file_path (str): The path to your CSV file.
-
-    Returns:
-        pandas.DataFrame: The processed DataFrame ready for further steps.
-    """
-
-    # 1. Read the CSV
     df = pd.read_csv(csv_file_path)
-    df.set_index('DateTime', inplace=True)  # Assuming 'DateTime' column exists
+    df.set_index('DateTime', inplace=True)  
 
-    # 2. Missing Value Handling (Customize based on your best strategy)
-    df.fillna(method='ffill', inplace=True)   # Example: Forward filling
+    df.fillna(method='ffill', inplace=True)   # Forward filling
    
     return df
 
-# Specify your CSV file path:
 file_path = 'merged_engineered_candles_data.csv'
 
-# Load and process your data:
 df_features = load_and_process_data(file_path) 
 
 # Check the results
 print(df_features.isnull().sum())  # Verify handling of missing values
 print(df_features.describe())       # Explore the data
- # Assuming df_features is already defined and preprocessed
+
 usable_columns = ['OKX Open', 'OKX High', 'OKX Low', 'OKX Close', 'OKX Volume', 
                   'Binance Open', 'Binance High', 'Binance Low', 'Binance Close', 'Binance Volume', 'Close Price Difference']
 
@@ -51,7 +40,6 @@ X['OKX Price-Volume Trend'] = X['OKX Close'] * X['OKX Volume']
 X['Binance Volatility'] = X['Binance High'] - X['Binance Low']
 X['OKX Close_SMA20'] = ta.trend.sma_indicator(X['OKX Close'], window=20)
 
-# Assuming 'OKX Percentage Change' is your target variable
 y = df_features['OKX Percentage Change'].values
 
 # Split the dataset
